@@ -8,7 +8,10 @@ export default function CeCard(){
         <div>
           <button className="BuyButtonCe" onClick={handleBuyBtClick}>
         BUY
-      </button>  
+      </button> 
+      <button className="SellButtonCe" onClick={handleSellBtClick}>
+        SELL
+      </button> 
         </div>
     )
 }
