@@ -9,6 +9,9 @@ export default function PeCard(){
             <button className="SellButtonPe" onClick={handleBuyBtClick}>
         BUY
       </button>
+      <button className="SellButtonPe" onClick={handleSellBtClick}>
+        SELL
+      </button>
         </div>
     )
 }
