@@ -16,6 +16,9 @@ export default function PeCard(){
       <label className="StrikePrice" htmlFor="PeStrikePricePop">
         CE STRIKE
       </label>
+      <label className="PeStopLossLabel" htmlFor="PeStopLossLabel">
+          SL
+        </label>
             <button className="SellButtonPe" onClick={handleBuyBtClick}>
         BUY
       </button>
