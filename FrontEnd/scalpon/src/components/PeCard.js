@@ -13,6 +13,9 @@ export default function PeCard(){
       <label className="QtyLabel" htmlFor="PeStrikePrice">
         QTY:
       </label>
+      <label className="StrikePrice" htmlFor="PeStrikePricePop">
+        CE STRIKE
+      </label>
             <button className="SellButtonPe" onClick={handleBuyBtClick}>
         BUY
       </button>
