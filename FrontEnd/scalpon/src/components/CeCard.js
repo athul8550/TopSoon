@@ -13,6 +13,9 @@ export default function CeCard(){
       <label className="QtyLabel" htmlFor="CeStrikePrice">
         QTY:
       </label>
+      <label className="StrikePrice" htmlFor="CeStrikePricePop">
+        CE STRIKE
+      </label>
           <button className="BuyButtonCe" onClick={handleBuyBtClick}>
         BUY
       </button> 
