@@ -7,6 +7,9 @@ export default function PeCard(){
     return(
         <div>
             <h1 className="PeHeading">PE</h1>
+            <label className="ExpLabel" htmlFor="PeStrikePrice">
+        EXP
+      </label>
             <button className="SellButtonPe" onClick={handleBuyBtClick}>
         BUY
       </button>
