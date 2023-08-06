@@ -6,6 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 export default function CeCard(){
     return(
         <div>
+          <h1 className="CeHeading">CE</h1>
           <button className="BuyButtonCe" onClick={handleBuyBtClick}>
         BUY
       </button> 
