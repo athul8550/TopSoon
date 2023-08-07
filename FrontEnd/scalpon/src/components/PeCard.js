@@ -4,6 +4,27 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function PeCard(){
+
+
+  /* FUNCTION FOR BUY BUTTON CLICKING */
+
+
+  async function handleBuyBtClick() {
+    try {
+     const OrderData = {
+      "exchange" : "NSE",
+      "tradingsymbol" : "RELIANCE",
+      "transaction_type" : "BUY",
+      "quantity" : 1,
+      "product" : "MIS",
+      "order_type" : "MARKET",
+      "validity" : "DAY",
+     }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
     return(
         <div>
             <h1 className="PeHeading">PE</h1>
