@@ -75,15 +75,22 @@ export default function PeCard(){
       const QTY = parseInt(SelectedQuantity) * 50; // Multiply selected quantity by 50
       setSelectedCeQty(QTY);
 
+      const CheckBoxForOrderType = document.getElementById("LIMIT");
+      const OrderType = checkbox.checked ? "MARKET" : "NRML";
+      const LimitPrice = checkbox.checked
+        ? parseFloat(document.getElementById("LimitPrice").value)
+        : 0;
+
      const OrderData = {
       "exchange" : "NFO",
       "tradingsymbol" : Symbol ,
       "transaction_type" : "BUY",
       "quantity" : QTY,
       "product" : "MIS",
-      "order_type" : "MARKET",
+      "order_type" : OrderType,
       "validity" : "DAY",
-     }
+      "price" : LimitPrice,
+      }
     } catch (error) {
       console.log(error);
     }
@@ -102,6 +109,11 @@ export default function PeCard(){
       <label className="StrikePrice" htmlFor="PeStrikePricePop">
         CE STRIKE
       </label>
+      <label for="LIMIT" className="labellimit">
+        LIMIT
+      </label>
+      <input type="checkbox" id="LimitPriceCheckBox" name="LimitCB"></input>
+      <input type="number" id="LimitPrice" name="LimitP"></input>
       <label className="PeStopLossLabel" htmlFor="PeStopLossLabel">
           SL
         </label>
