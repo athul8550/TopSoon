@@ -74,14 +74,21 @@ export default function CeCard(){
       const QTY = parseInt(SelectedQty) * 50;
       setSelectedQuantity(QTY);
 
+      const CheckBoxForOrderType = document.getElementById("LimitPriceCheckBox");
+      const OrderType = checkbox.checked ? "MARKET" : "NRML";
+      const LimitPrice = checkbox.checked
+        ? parseFloat(document.getElementById("LimitPrice").value)
+        : 0;
+
       const OrderData = {
         "exchange": "NFO",
         "tradingsymbol": Symbol ,
         "transaction_type": "BUY",
         "quantity": QTY , 
         "product": "MIS",
-        "order_type": "MARKET",
+        "order_type": OrderType,
         "validity": "DAY",
+        "price" : LimitPrice,
       }
     } catch (error) {
       console.log(error);
@@ -100,6 +107,11 @@ export default function CeCard(){
       <label className="StrikePrice" htmlFor="CeStrikePricePop">
         CE STRIKE
       </label>
+      <label for="LIMIT" className="labellimit">
+        LIMIT
+      </label>
+      <input type="checkbox" id="LimitPriceCheckBox" name="LimitCB"></input>
+      <input type="number" id="LimitPrice" name="LimitP"></input>
       <label className="CeStopLossLabel" htmlFor="CeStopLossLabel">
           SL
         </label>
