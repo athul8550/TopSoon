@@ -8,6 +8,57 @@ export default function CeCard(){
   const [CeSymbolSelected, setCeSymbolSelected] = useState("");
   const [CeStrikePriceSelected, setCeSTrikePriceSelected] = useState(null);
 
+
+  /* GENERATING SYMBOL FUNCTION */
+  
+  const generateSymbol = (CeStrikePriceSelected) => {
+    const SelectedExpiryDate = new Date(
+      document.getElementById("callstrike").value
+    );
+    const StrikePriceCeSelected = CeStrikePriceSelected;
+
+    const year = SelectedExpiryDate.getFullYear().toString().substr(-2);
+    const monthMap = {
+      Jan: "1",
+      Feb: "2",
+      Mar: "3",
+      Apr: "4",
+      May: "5",
+      Jun: "6",
+      Jul: "7",
+      Aug: "8",
+      Sep: "9",
+      Oct: "O",
+      Nov: "N",
+      Dec: "D",
+    };
+    const month = isLastThursdayOfMonth(SelectedExpiryDate)
+      ? SelectedExpiryDate
+          .toLocaleString("default", { month: "short" })
+          .toUpperCase()
+      : monthMap[
+          SelectedExpiryDate.toLocaleString("default", { month: "short" })
+        ];
+    const day = SelectedExpiryDate.getDate().toString().padStart(2, "0");
+
+    const isLastThursday = isLastThursdayOfMonth(SelectedExpiryDate);
+
+    // GENERATE SYMBOL CHECKING WHETHER LAST THURSDAY OR NOT
+    let TradingSymbol ;
+    const OptionType = "CE";
+    const SymbolName = "NIFTY"
+    const Strike = StrikePriceCeSelected;
+    if (isLastThursday) {
+
+       TradingSymbol = `${SymbolName}${year}${month}${Strike}${OptionType}`;
+
+    } else {
+       TradingSymbol = `${SymbolName}${year}${month}${day}${Strike}${OptionType}`;
+    }
+
+    return TradingSymbol;
+  };
+
   /* FUNCTION FOR BUY BUTTON CLICKING */
 
   async function handleBuyBtClick() {
@@ -18,7 +69,7 @@ export default function CeCard(){
 
       const OrderData = {
         "exchange": "NFO",
-        "tradingsymbol": "RELIANCE",
+        "tradingsymbol": Symbol ,
         "transaction_type": "BUY",
         "quantity": 1, 
         "product": "MIS",
