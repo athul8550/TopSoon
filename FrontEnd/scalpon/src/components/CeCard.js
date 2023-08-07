@@ -2,11 +2,14 @@ import React, { useState, useEffect } from "react";
 import "./CeCard.css";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import QuantityCe from "./QuantityCe";
 
 export default function CeCard(){
 
   const [CeSymbolSelected, setCeSymbolSelected] = useState("");
   const [CeStrikePriceSelected, setCeSTrikePriceSelected] = useState(null);
+
+  const [SelectedQuantity, setSelectedQuantity] = useState("");
 
 
   /* GENERATING SYMBOL FUNCTION */
@@ -67,11 +70,15 @@ export default function CeCard(){
       const Symbol = generateSymbol(CeStrikePriceSelected);
       setCeSymbolSelected(Symbol);
 
+      const SelectedQty = document.getElementById("QCe").value;
+      const QTY = parseInt(SelectedQty) * 50;
+      setSelectedQuantity(QTY);
+
       const OrderData = {
         "exchange": "NFO",
         "tradingsymbol": Symbol ,
         "transaction_type": "BUY",
-        "quantity": 1, 
+        "quantity": QTY , 
         "product": "MIS",
         "order_type": "MARKET",
         "validity": "DAY",
@@ -89,6 +96,7 @@ export default function CeCard(){
       <label className="QtyLabel" htmlFor="CeStrikePrice">
         QTY:
       </label>
+      <QuantityCe />
       <label className="StrikePrice" htmlFor="CeStrikePricePop">
         CE STRIKE
       </label>
