@@ -3,6 +3,7 @@ import "./CeCard.css";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import QuantityCe from "./QuantityCe";
+import ExpiryDatesCe from "./ExpiryDatesCe";
 
 export default function CeCard(){
 
@@ -161,6 +162,7 @@ export default function CeCard(){
         QTY:
       </label>
       <QuantityCe />
+      <ExpiryDatesCe nextThursdays={getNextThursdays()} />
       <label className="StrikePrice" htmlFor="CeStrikePricePop">
         CE STRIKE
       </label>
