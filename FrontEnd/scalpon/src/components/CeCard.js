@@ -5,14 +5,19 @@ import "react-toastify/dist/ReactToastify.css";
 
 export default function CeCard(){
 
-  
+  const [CeSymbolSelected, setCeSymbolSelected] = useState("");
+  const [CeStrikePriceSelected, setCeSTrikePriceSelected] = useState(null);
 
   /* FUNCTION FOR BUY BUTTON CLICKING */
 
   async function handleBuyBtClick() {
     try {
+
+      const Symbol = generateSymbol(CeStrikePriceSelected);
+      setCeSymbolSelected(Symbol);
+
       const OrderData = {
-        "exchange": " NSE",
+        "exchange": "NFO",
         "tradingsymbol": "RELIANCE",
         "transaction_type": "BUY",
         "quantity": 1, 
