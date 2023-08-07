@@ -11,6 +11,8 @@ export default function CeCard(){
 
   const [SelectedQuantity, setSelectedQuantity] = useState("");
 
+  const [SelectedOrderType, setSelectedOrderType] = useState("");
+
 
   /* GENERATING SYMBOL FUNCTION */
   
@@ -75,8 +77,9 @@ export default function CeCard(){
       setSelectedQuantity(QTY);
 
       const CheckBoxForOrderType = document.getElementById("LimitPriceCheckBox");
-      const OrderType = checkbox.checked ? "MARKET" : "NRML";
-      const LimitPrice = checkbox.checked
+      const OrderType = CheckBoxForOrderType.checked ? "MARKET" : "NRML";
+      
+      const LimitPrice = CheckBoxForOrderType.checked
         ? parseFloat(document.getElementById("LimitPrice").value)
         : 0;
 
@@ -94,6 +97,32 @@ export default function CeCard(){
       console.log(error);
     }
   }
+
+  async function handleSellBtClick() {
+    try {
+      
+      const CheckBoxForOrderTypeSell = document.getElementById("LimitPriceSellCheckBox");
+      const OrderTypeSell = CheckBoxForOrderTypeSell.checked ? "MARKET" : "NRML";
+      
+      const LimitPriceSell = CheckBoxForOrderTypeSell.checked
+        ? parseFloat(document.getElementById("LimitPriceSell").value)
+        : 0;
+
+      const OrderData = {
+        "exchange": "NFO",
+        "tradingsymbol": CeSymbolSelected ,
+        "transaction_type": "SELL",
+        "quantity": SelectedQuantity , 
+        "product": "MIS",
+        "order_type": OrderTypeSell,
+        "validity": "DAY",
+        "price" : LimitPriceSell,
+      };
+      
+    } catch (error) {
+      console.log(error);
+    }
+  }
     return(
         <div>
           <h1 className="CeHeading">CE</h1>
@@ -107,11 +136,18 @@ export default function CeCard(){
       <label className="StrikePrice" htmlFor="CeStrikePricePop">
         CE STRIKE
       </label>
-      <label for="LIMIT" className="labellimit">
+      {/* BUY LIMIT */}
+      <label for="LimitCB" className="LabelForLimit">
         LIMIT
       </label>
       <input type="checkbox" id="LimitPriceCheckBox" name="LimitCB"></input>
       <input type="number" id="LimitPrice" name="LimitP"></input>
+      {/* SELL LIMIT */}
+      <label for="LimitSellCB" className="LabelForLimitSell">
+        LIMIT
+      </label>
+      <input type="checkbox" id="LimitPriceSellCheckBox" name="LimitSCB"></input>
+      <input type="number" id="LimitPriceSell" name="LimitPS"></input>
       <label className="CeStopLossLabel" htmlFor="CeStopLossLabel">
           SL
         </label>
