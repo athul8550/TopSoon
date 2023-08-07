@@ -2,11 +2,14 @@ import React, { useState, useEffect } from "react";
 import "./PeCard.css";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import QuantityPe from "./QuantityPe";
 
 export default function PeCard(){
 
   const [PeSymbolSelected, setPeSymbolSelected] = useState("");
   const [PeStrikePriceSelected, setPeStrikePriceSelected] = useState(null);
+
+  const [SelectedQuantity, setSelectedCeQuantity] = useState("");
 
 
   /* GENERATING SYMBOL FUNCTION  */
@@ -62,18 +65,21 @@ export default function PeCard(){
 
   /* FUNCTION FOR BUY BUTTON CLICKING */
 
-
   async function handleBuyBtClick() {
     try {
 
       const Symbol = generateSymbol(PeStrikePriceSelected);
       setPeSymbolSelected(Symbol);
 
+      const SelectedQty = document.getElementById("QPe").value;
+      const QTY = parseInt(SelectedQuantity) * 50; // Multiply selected quantity by 50
+      setSelectedCeQty(QTY);
+
      const OrderData = {
       "exchange" : "NFO",
       "tradingsymbol" : Symbol ,
       "transaction_type" : "BUY",
-      "quantity" : 1,
+      "quantity" : QTY,
       "product" : "MIS",
       "order_type" : "MARKET",
       "validity" : "DAY",
@@ -92,6 +98,7 @@ export default function PeCard(){
       <label className="QtyLabel" htmlFor="PeStrikePrice">
         QTY:
       </label>
+      <QuantityPe/>
       <label className="StrikePrice" htmlFor="PeStrikePricePop">
         CE STRIKE
       </label>
