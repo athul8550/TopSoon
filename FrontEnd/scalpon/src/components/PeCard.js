@@ -3,6 +3,7 @@ import "./PeCard.css";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import QuantityPe from "./QuantityPe";
+import ExpiryDatesPe from "./ExpiryDatesPe";
 
 export default function PeCard(){
 
@@ -159,6 +160,7 @@ export default function PeCard(){
         QTY:
       </label>
       <QuantityPe/>
+      <ExpiryDatesPe nextThursdays={getNextThursdays()} />
       <label className="StrikePrice" htmlFor="PeStrikePricePop">
         CE STRIKE
       </label>
