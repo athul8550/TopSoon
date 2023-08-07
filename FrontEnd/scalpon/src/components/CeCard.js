@@ -11,7 +11,35 @@ export default function CeCard(){
 
   const [SelectedQuantity, setSelectedQuantity] = useState("");
 
-  const [SelectedOrderType, setSelectedOrderType] = useState("");
+  
+  /* GETTING THURSDAY DATES */
+
+  function getNextThursdays() {
+    const today = new Date();
+    const daysUntilNextThursday = (4 - today.getDay() + 7) % 7;
+    const nextThursdays = [];
+
+    for (let i = 0; i < 3; i++) {
+      const nextThursday = new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        today.getDate() + daysUntilNextThursday + i * 7
+      );
+      nextThursdays.push(nextThursday);
+    }
+
+    return nextThursdays;
+  }
+
+  function renderOptions() {
+    const nextThursdays = getNextThursdays();
+    const options = nextThursdays.map((thursday) => (
+      <option key={thursday.toISOString()} value={thursday.toISOString()}>
+        {formatDate(thursday)}
+      </option>
+    ));
+    return options;
+  }
 
 
   /* GENERATING SYMBOL FUNCTION */
