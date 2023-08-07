@@ -11,6 +11,7 @@ export default function PeCard(){
 
   const [SelectedQuantity, setSelectedCeQuantity] = useState("");
 
+  const [SelectedOrderType, setSelectedOrderType] = useState("");
 
   /* GENERATING SYMBOL FUNCTION  */
   const generateSymbol = (PeStrikePriceSelected) => {
@@ -76,8 +77,8 @@ export default function PeCard(){
       setSelectedCeQty(QTY);
 
       const CheckBoxForOrderType = document.getElementById("LIMIT");
-      const OrderType = checkbox.checked ? "MARKET" : "NRML";
-      const LimitPrice = checkbox.checked
+      const OrderType = CheckBoxForOrderType.checked ? "MARKET" : "NRML";
+      const LimitPrice = CheckBoxForOrderType.checked
         ? parseFloat(document.getElementById("LimitPrice").value)
         : 0;
 
@@ -95,7 +96,31 @@ export default function PeCard(){
       console.log(error);
     }
   }
+  async function handleSellBtClick() {
+    try {
+      
+      const CheckBoxForOrderTypeSell = document.getElementById("LimitPriceSellCheckbox");
+      const OrderTypeSell = CheckBoxForOrderTypeSell .checked ? "MARKET" : "NRML";
 
+      const LimitPriceSell = CheckBoxForOrderTypeSell .checked
+        ? parseFloat(document.getElementById("LimitPriceSellCheckbox").value)
+        : 0;
+
+      const orderData = {
+        "exchange" : "NFO",
+      "tradingsymbol" : PeSymbolSelected,
+      "transaction_type" : "SELL",
+      "quantity" : SelectedQuantity,
+      "product" : "MIS",
+      "order_type" : OrderTypeSell,
+      "validity" : "DAY",
+      "price" : LimitPriceSell,
+      };
+   
+    } catch (error) {
+      console.log(error);
+    }
+  }
     return(
         <div>
             <h1 className="PeHeading">PE</h1>
@@ -109,17 +134,25 @@ export default function PeCard(){
       <label className="StrikePrice" htmlFor="PeStrikePricePop">
         CE STRIKE
       </label>
-      <label for="LIMIT" className="labellimit">
+      {/* BUY LIMIT */}
+      <label for="LimitCB" className="LabelForLimit">
         LIMIT
       </label>
       <input type="checkbox" id="LimitPriceCheckBox" name="LimitCB"></input>
       <input type="number" id="LimitPrice" name="LimitP"></input>
+      {/* SELL LIMIT */}
+      <label for="LimitSellCB" className="LabelForLimitSell">
+        LIMIT
+      </label>
+      <input type="checkbox" id="LimitPriceCheckBox" name="LimitSCB"></input>
+      <input type="number" id="LimitPriceSell" name="LimitPS"></input>
       <label className="PeStopLossLabel" htmlFor="PeStopLossLabel">
           SL
         </label>
             <button className="SellButtonPe" onClick={handleBuyBtClick}>
         BUY
       </button>
+      
       <button className="SellButtonPe" onClick={handleSellBtClick}>
         SELL
       </button>
