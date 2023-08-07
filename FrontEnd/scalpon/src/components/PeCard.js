@@ -9,6 +9,57 @@ export default function PeCard(){
   const [PeStrikePriceSelected, setPeStrikePriceSelected] = useState(null);
 
 
+  /* GENERATING SYMBOL FUNCTION  */
+  const generateSymbol = (PeStrikePriceSelected) => {
+    const SelectedExpiryDate = new Date(
+      document.getElementById("callstrike").value
+    );
+    const StrikePriceCeSelected = PeStrikePriceSelected;
+
+    const year = selectedExpiryDate.getFullYear().toString().substr(-2);
+    const monthMap = {
+      Jan: "1",
+      Feb: "2",
+      Mar: "3",
+      Apr: "4",
+      May: "5",
+      Jun: "6",
+      Jul: "7",
+      Aug: "8",
+      Sep: "9",
+      Oct: "O",
+      Nov: "N",
+      Dec: "D",
+    };
+    const month = isLastThursdayOfMonth(selectedExpiryDate)
+      ? SelectedExpiryDate
+          .toLocaleString("default", { month: "short" })
+          .toUpperCase()
+      : monthMap[
+          SelectedExpiryDate.toLocaleString("default", { month: "short" })
+        ];
+    const day = SelectedExpiryDate.getDate().toString().padStart(2, "0");
+
+    const isLastThursday = isLastThursdayOfMonth(SelectedExpiryDate);
+
+    // GENERATE SYMBOL CHECKING WHETHER LAST THURSDAY OR NOT
+    let TradingSymbol;
+    const OptionType = "PE";
+    const SymbolName = "NIFTY"
+    const Strike = StrikePricePeSelected;
+    if (isLastThursday) {
+      
+      TradingSymbol = `${SymbolName}${year}${month}${Strike}${OptionType}`;
+
+
+    } else {
+
+      TradingSymbol = `${SymbolName}${year}${month}${day}${strike}${OptionType}`;
+    }
+
+    return TradingSymbol;
+  };
+
   /* FUNCTION FOR BUY BUTTON CLICKING */
 
 
@@ -20,7 +71,7 @@ export default function PeCard(){
 
      const OrderData = {
       "exchange" : "NFO",
-      "tradingsymbol" : "RELIANCE",
+      "tradingsymbol" : Symbol ,
       "transaction_type" : "BUY",
       "quantity" : 1,
       "product" : "MIS",
