@@ -5,14 +5,21 @@ import "react-toastify/dist/ReactToastify.css";
 
 export default function PeCard(){
 
+  const [PeSymbolSelected, setPeSymbolSelected] = useState("");
+  const [PeStrikePriceSelected, setPeStrikePriceSelected] = useState(null);
+
 
   /* FUNCTION FOR BUY BUTTON CLICKING */
 
 
   async function handleBuyBtClick() {
     try {
+
+      const Symbol = generateSymbol(PeStrikePriceSelected);
+      setPeSymbolSelected(Symbol);
+
      const OrderData = {
-      "exchange" : "NSE",
+      "exchange" : "NFO",
       "tradingsymbol" : "RELIANCE",
       "transaction_type" : "BUY",
       "quantity" : 1,
