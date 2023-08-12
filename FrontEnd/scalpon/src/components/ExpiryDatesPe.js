@@ -35,4 +35,4 @@ function ExpiryDatesPe({ nextThursdays }) {
   );
 }
 
-export default Options;
+export default ExpiryDatesPe;

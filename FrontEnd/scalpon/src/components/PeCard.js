@@ -54,7 +54,7 @@ export default function PeCard(){
     );
     const StrikePriceCeSelected = PeStrikePriceSelected;
 
-    const year = selectedExpiryDate.getFullYear().toString().substr(-2);
+    const year = SelectedExpiryDate.getFullYear().toString().substr(-2);
     const monthMap = {
       Jan: "1",
       Feb: "2",
@@ -69,7 +69,7 @@ export default function PeCard(){
       Nov: "N",
       Dec: "D",
     };
-    const month = isLastThursdayOfMonth(selectedExpiryDate)
+    const month = isLastThursdayOfMonth(SelectedExpiryDate)
       ? SelectedExpiryDate
           .toLocaleString("default", { month: "short" })
           .toUpperCase()
@@ -89,9 +89,7 @@ export default function PeCard(){
       
       TradingSymbol = `${SymbolName}${year}${month}${Strike}${OptionType}`;
 
-
     } else {
-
       TradingSymbol = `${SymbolName}${year}${month}${day}${strike}${OptionType}`;
     }
 
@@ -148,10 +146,10 @@ export default function PeCard(){
     try {
       
       const CheckBoxForOrderTypeSell = document.getElementById("LimitPriceSellCheckbox");
-      const OrderTypeSell = CheckBoxForOrderTypeSell .checked ? "MARKET" : "NRML";
+      const OrderTypeSell = CheckBoxForOrderTypeSell .checked ? "NRML" :"MARKET" ;
 
       const LimitPriceSell = CheckBoxForOrderTypeSell .checked
-        ? parseFloat(document.getElementById("LimitPriceSellCheckbox").value)
+        ? parseFloat(document.getElementById("LimitPriceSell").value)
         : 0;
 
       const orderData = {
@@ -214,7 +212,6 @@ export default function PeCard(){
             <button className="SellButtonPe" onClick={handleBuyBtClick}>
         BUY
       </button>
-      
       <button className="SellButtonPe" onClick={handleSellBtClick}>
         SELL
       </button>

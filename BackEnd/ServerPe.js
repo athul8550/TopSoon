@@ -47,9 +47,9 @@ async function generateAccessToken() {
 
         app.post('/api/buyOrderPe', async (req, res) => {
             try {
-                const orderData = req.body; // Access the JSON data sent from the frontend
+                const orderDataBuy = req.body; // Access the JSON data sent from the frontend
                 
-                const response = await BuyOrderCe(orderData);
+                const response = await BuyOrderPe(orderDataBuy);
                 console.log('Order placed successfully.');
                 res.json({ message: response });
             } catch (err) {
@@ -57,31 +57,80 @@ async function generateAccessToken() {
                 res.status(500).json({ error: 'Error placing the order.' });
             }
         });
+        app.post('/api/sellOrderPe', async (req, res) => {
+          try {
+              const orderData = req.body; // Access the JSON data sent from the frontend
+              
+              const response = await SellOrderPe(orderDataSell);
+              console.log('Order placed successfully.');
+              res.json({ message: response });
+          } catch (err) {
+              console.log(err);
+              res.status(500).json({ error: 'Error placing the order.' });
+          }
+      });
 
-        async function BuyOrderCe(orderData) {
+        async function BuyOrderPe(orderDataBuy) {
             try {
-                script=orderData.tradingsymbol
-                qty = orderData.quantity
-                orderType =  orderData.order_type
-                priceLimit = orderData.LimitPrice 
+                script=orderDataBuy.tradingsymbol
+                qty = orderDataBuy.quantity
+                orderType =  orderDataBuy.order_type
+                priceLimit = orderDataBuy.price 
 
+                console.log('Received order data:', orderDataBuy);
 
-                console.log('Received order data:', orderData);
-                
-                await kc.placeOrder("regular", {
-                    "exchange": "NFO",
-                    "tradingsymbol": script,
-                    "transaction_type": "BUY",
-                    "quantity": qty,
-                    "product": "MIS",
-                    "order_type": orderType,
-                    "price" : priceLimit,
-                });
+                const orderDataobject = {
+                  "exchange ": "NFO" ,
+                  "tradingsymbol": script,
+                  "transaction_type": "BUY",
+                  "quantity": qty,
+                  "product": "MIS",
+                  "order_type": orderType,
+                  "validity": "DAY"
+                };
+
+                // Add "price" property only if orderType is "NRML"
+                if (orderType === "NRML"){
+                   orderDataobject.price = priceLimit;
+                }
+
+                await kc.placeOrder("regular", orderDataobject);
                 
             } catch (err) {
                 console.log(err);
             }
         }
+        async function SellOrderPe(orderDataSell) {
+          try {
+              script=orderDataSell.tradingsymbol
+              qty = orderDataSell.quantity
+              orderType =  orderDataSell.order_type
+              priceLimit = orderDataSell.price 
+
+
+              console.log('Received order data:', orderDataSell);
+              
+              const orderDataobject = {
+                "exchange ": "NFO" ,
+                "tradingsymbol": script,
+                "transaction_type": "BUY",
+                "quantity": qty,
+                "product": "MIS",
+                "order_type": orderType,
+                "validity": "DAY"
+              };
+
+              // Add "price" property only if orderType is "NRML"
+              if (orderType === "NRML"){
+                 orderDataobject.price = priceLimit;
+              }
+
+              await kc.placeOrder("regular", orderDataobject);
+          } catch (err) {
+              console.log(err);
+          }
+      }
+
 
         app.listen(PORT, () => {
             console.log(`Server is running on http://localhost:${PORT}`);
