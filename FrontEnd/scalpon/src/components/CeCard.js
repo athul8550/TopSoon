@@ -31,24 +31,26 @@ export default function CeCard(){
 
     return nextThursdays;
   }
-
-  function renderOptions() {
-    const nextThursdays = getNextThursdays();
-    const options = nextThursdays.map((thursday) => (
-      <option key={thursday.toISOString()} value={thursday.toISOString()}>
-        {formatDate(thursday)}
-      </option>
-    ));
-    return options;
-  }
+  /* CHECK LAST THURSDAY OF THE MONTH */
+  const isLastThursdayOfMonth = (date) => {
+    const nextMonth = new Date(date);
+    nextMonth.setMonth(nextMonth.getMonth() + 1);
+    nextMonth.setDate(1);
+    const lastThursday = new Date(nextMonth);
+    lastThursday.setDate(lastThursday.getDate() - 1);
+    while (lastThursday.getDay() !== 4) {
+      lastThursday.setDate(lastThursday.getDate() - 1);
+    }
+    return (
+      date.getMonth() === lastThursday.getMonth() &&
+      date.getDate() === lastThursday.getDate()
+    );
+  };
 
 
   /* GENERATING SYMBOL FUNCTION */
   
   const generateSymbol = (CeStrikePriceSelected) => {
-    const SelectedExpiryDate = new Date(
-      document.getElementById("callstrike").value
-    );
     const StrikePriceCeSelected = CeStrikePriceSelected;
 
     const year = SelectedExpiryDate.getFullYear().toString().substr(-2);
@@ -97,7 +99,7 @@ export default function CeCard(){
 
   async function handleBuyBtClick() {
     try {
-
+      
       const Symbol = generateSymbol(CeStrikePriceSelected);
       setCeSymbolSelected(Symbol);
 
@@ -116,11 +118,25 @@ export default function CeCard(){
         "exchange": "NFO",
         "tradingsymbol": Symbol ,
         "transaction_type": "BUY",
-        "quantity": QTY , 
+        "quantity": QTY, 
         "product": "MIS",
         "order_type": OrderType,
         "validity": "DAY",
         "price" : LimitPrice,
+      }
+      const response = await fetch('http://localhost:5000/api/buyOrderCe', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(OrderData), // Pass the variety value if needed
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data.message); // Output the server response
+      } else {
+        console.error('Error placing the order:', response.statusText);
       }
     } catch (error) {
       console.log(error);
@@ -147,6 +163,20 @@ export default function CeCard(){
         "validity": "DAY",
         "price" : LimitPriceSell,
       };
+      const response = await fetch('http://localhost:5000/api/sellOrderCe', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(OrderData), // Pass the variety value if needed
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data.message); // Output the server response
+      } else {
+        console.error('Error placing the order:', response.statusText);
+      }
       
     } catch (error) {
       console.log(error);
