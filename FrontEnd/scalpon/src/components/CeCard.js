@@ -52,6 +52,9 @@ export default function CeCard(){
   
   const generateSymbol = (CeStrikePriceSelected) => {
     const StrikePriceCeSelected = CeStrikePriceSelected;
+    const SelectedExpiryDate = new Date(
+      document.getElementById("callstrike").value
+    );
 
     const year = SelectedExpiryDate.getFullYear().toString().substr(-2);
     const monthMap = {
@@ -108,11 +111,11 @@ export default function CeCard(){
       setSelectedQuantity(QTY);
 
       const CheckBoxForOrderType = document.getElementById("LimitPriceCheckBox");
-      const OrderType = CheckBoxForOrderType.checked ? "MARKET" : "NRML";
+      const OrderType = CheckBoxForOrderType.checked ? "NRML" : "MARKET";
       
       const LimitPrice = CheckBoxForOrderType.checked
         ? parseFloat(document.getElementById("LimitPrice").value)
-        : 0;
+        : 0.0;
 
       const OrderData = {
         "exchange": "NFO",
@@ -124,6 +127,7 @@ export default function CeCard(){
         "validity": "DAY",
         "price" : LimitPrice,
       }
+      console.log(OrderData);
       const response = await fetch('http://localhost:5000/api/buyOrderCe', {
         method: 'POST',
         headers: {
@@ -147,11 +151,11 @@ export default function CeCard(){
     try {
       
       const CheckBoxForOrderTypeSell = document.getElementById("LimitPriceSellCheckBox");
-      const OrderTypeSell = CheckBoxForOrderTypeSell.checked ? "MARKET" : "NRML";
+      const OrderTypeSell = CheckBoxForOrderTypeSell.checked ? "NRML" : "MARKET" ;
       
       const LimitPriceSell = CheckBoxForOrderTypeSell.checked
         ? parseFloat(document.getElementById("LimitPriceSell").value)
-        : 0;
+        : 0.0;
 
       const OrderData = {
         "exchange": "NFO",

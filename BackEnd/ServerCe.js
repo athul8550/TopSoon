@@ -47,9 +47,21 @@ async function generateAccessToken() {
 
         app.post('/api/buyOrderCe', async (req, res) => {
             try {
-                const orderData = req.body; // Access the JSON data sent from the frontend
+                const orderDataBuy = req.body; // Access the JSON data sent from the frontend
                 
-                const response = await BuyOrderCe(orderData);
+                const response = await BuyOrderCe(orderDataBuy);
+                console.log('Order placed successfully.');
+                res.json({ message: response });
+            } catch (err) {
+                console.log(err);
+                res.status(500).json({ error: 'Error placing the order.' });
+            }
+        });
+        app.post('/api/sellOrderCe', async (req, res) => {
+            try {
+                const orderDataSell = req.body; // Access the JSON data sent from the frontend
+                
+                const response = await SellOrderCe(orderDataSell);
                 console.log('Order placed successfully.');
                 res.json({ message: response });
             } catch (err) {
@@ -58,25 +70,65 @@ async function generateAccessToken() {
             }
         });
 
-        async function BuyOrderCe(orderData) {
+
+        async function BuyOrderCe(orderDataBuy) {
             try {
-                script=orderData.tradingsymbol
-                qty = orderData.quantity
-                orderType =  orderData.order_type
-                priceLimit = orderData.LimitPrice 
+                script=orderDataBuy.tradingsymbol
+                qty = orderDataBuy.quantity
+                orderType =  orderDataBuy.order_type
+                priceLimit = orderDataBuy.price 
 
-
-                console.log('Received order data:', orderData);
+                console.log('Received order data:', orderDataBuy);
                 
-                await kc.placeOrder("regular", {
+                const orderDataObject = {
                     "exchange": "NFO",
                     "tradingsymbol": script,
                     "transaction_type": "BUY",
                     "quantity": qty,
                     "product": "MIS",
                     "order_type": orderType,
-                    "price" : priceLimit,
-                });
+                    "validity": "DAY"
+                };
+
+                 // Add "price" property only if orderType is "NRML"
+                if (orderType === "NRML") {
+                    orderDataObject.price = priceLimit;
+                }
+                console.log('Received order data:', orderDataObject);
+
+                await kc.placeOrder("regular", orderDataObject);
+                
+            } catch (err) {
+                console.log(err);
+            }
+        }
+        async function SellOrderCe(orderDataSell) {
+            try {
+                script=orderDataSell.tradingsymbol
+                qty = orderDataSell.quantity
+                orderType =  orderDataSell.order_type
+                priceLimit = orderDataSell.price
+
+
+                console.log('Received order data:', orderDataSell);
+                
+                const orderDataObject = {
+                    "exchange": "NFO",
+                    "tradingsymbol": script,
+                    "transaction_type": "BUY",
+                    "quantity": qty,
+                    "product": "MIS",
+                    "order_type": orderType,
+                    "validity": "DAY"
+                };
+
+                 // Add "price" property only if orderType is "NRML"
+                if (orderType === "NRML") {
+                    orderDataObject.price = priceLimit;
+                }
+                console.log('Received order data:', orderDataObject);
+
+                await kc.placeOrder("regular", orderDataObject);
                 
             } catch (err) {
                 console.log(err);
@@ -90,3 +142,4 @@ async function generateAccessToken() {
         console.error('Error generating access token:', err);
     }
 })();
+ 
