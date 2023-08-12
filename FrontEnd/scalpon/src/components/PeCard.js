@@ -31,16 +31,21 @@ export default function PeCard(){
 
     return nextThursdays;
   }
-
-  function renderOptions() {
-    const nextThursdays = getNextThursdays();
-    const options = nextThursdays.map((thursday) => (
-      <option key={thursday.toISOString()} value={thursday.toISOString()}>
-        {formatDate(thursday)}
-      </option>
-    ));
-    return options;
-  }
+/* CHECK LAST THURSDAY OF THE MONTH */
+  const isLastThursdayOfMonth = (date) => {
+    const nextMonth = new Date(date);
+    nextMonth.setMonth(nextMonth.getMonth() + 1);
+    nextMonth.setDate(1);
+    const lastThursday = new Date(nextMonth);
+    lastThursday.setDate(lastThursday.getDate() - 1);
+    while (lastThursday.getDay() !== 4) {
+      lastThursday.setDate(lastThursday.getDate() - 1);
+    }
+    return (
+      date.getMonth() === lastThursday.getMonth() &&
+      date.getDate() === lastThursday.getDate()
+    );
+  };
 
   /* GENERATING SYMBOL FUNCTION  */
   const generateSymbol = (PeStrikePriceSelected) => {
@@ -121,6 +126,20 @@ export default function PeCard(){
       "validity" : "DAY",
       "price" : LimitPrice,
       }
+      const response = await fetch('http://localhost:5000/api/buyOrderPe',{
+        method : 'POST',
+        headers : {
+          'Content-Type' : ' application/json',
+        },
+        body : JSON.stringify(OrderData),//pass thr variety value if needed
+      });
+      
+      if (response.ok){
+        const data = await response.json();
+        console.log(data.message);//output the server response
+      } else {
+        console,error('Error placing the order:', response.statusText);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -145,7 +164,20 @@ export default function PeCard(){
       "validity" : "DAY",
       "price" : LimitPriceSell,
       };
-   
+      const response = await fetch('http://localhost:5000/api/sellOrderPe',{
+        method : 'POST',
+        headers : {
+          'Content-Type' : ' application/json',
+        },
+        body : JSON.stringify(OrderData),//pass thr variety value if needed
+      });
+      
+      if (response.ok){
+        const data = await response.json();
+        console.log(data.message);//output the server response
+      } else {
+        console.error('Error placing the order:', response.statusText);
+      }
     } catch (error) {
       console.log(error);
     }
