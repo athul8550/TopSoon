@@ -4,6 +4,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import QuantityCe from "./QuantityCe";
 import ExpiryDatesCe from "./ExpiryDatesCe";
+import socketIOClient from "socket.io-client";
 
 export default function CeCard(){
 
@@ -11,6 +12,8 @@ export default function CeCard(){
   const [CeStrikePriceSelected, setCeSTrikePriceSelected] = useState(null);
 
   const [SelectedQuantity, setSelectedQuantity] = useState("");
+
+  const [NiftyCeData, setNiftyCeData] = useState(null);
 
   
   /* GETTING THURSDAY DATES */
@@ -186,6 +189,28 @@ export default function CeCard(){
       console.log(error);
     }
   }
+  useEffect(() => {
+    const socket = socketIOClient("http://localhost:5000");
+
+    socket.on("connect", () => {
+      console.log("Connected to Socket.IO server");
+    });
+
+    socket.on("dataNiftyCeUpdate", (NiftyCeData) => {
+      console.log("Received data update:", NiftyCeData[0].last_price);
+      setNiftyCeData(NiftyCeData[0].last_price)
+      // Handle your data here
+    });
+
+    socket.on("disconnect", () => {
+      console.log("Disconnected from Socket.IO server");
+    });
+
+    return () => {
+      socket.disconnect(); // Clean up the socket connection when the component unmounts
+    };
+  });
+
     return(
         <div>
           <h1 className="CeHeading">CE</h1>
@@ -221,6 +246,16 @@ export default function CeCard(){
       <button className="SellButtonCe" onClick={handleSellBtClick}>
         SELL
       </button> 
+      <div>
+      {/* Display the fetched data */}
+      {NiftyCeData && (
+        <div>
+          <h1>NIFTY CE LTP</h1>
+          <h2>{NiftyCeData}</h2>
+        </div>
+      )}
+      {/* Rest of your component UI */}
+    </div>
         </div>
     )
 }
