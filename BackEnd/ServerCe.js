@@ -3,7 +3,6 @@ const cors = require('cors');
 const http = require('http');
 const socketIo = require('socket.io');
 const fs = require('fs');
-const ExcelJS = require('exceljs');
 const app = express();
 const server = http.createServer(app);
 var KiteTicker = require("kiteconnect").KiteTicker; 
@@ -25,8 +24,8 @@ app.use(express.json()); // Add this line to parse JSON data in the request body
 
 var api_key = "qgb9iz5siyr6fx96",
     secret = "bmr6xa1ksoeilq7uz06acka31mrlgow8",
-    request_token = "K4xCg7YC8I4xR2vxucJqKHf2igfUw5CZ",
-    access_token = "9LuQ11NHWgk9mSYiJitDq2kpjyY4Fi41";
+    request_token = "VqNrTK3715hIIDNG2Kd8bg2LB9992KjX",
+    access_token = "QIf5Nu72tGq2Hk0IRjmBVH7txQKiXDsx";
 
 //FOR HTTP REQUESTS
 
@@ -67,31 +66,23 @@ async function generateAccessToken() {
     try {
         await generateAccessToken();
 
-        app.post('/api/buyOrderCe', async (req, res) => {
+        app.post('/api/buyOrderCe1', async (req, res) => {
             try {
                 
-                const response = await kc.orderMargins([{
-                    "exchange": "NSE",
-                    "tradingsymbol": "RELIANCE",
-                    "transaction_type": "BUY",
-                    "variety": "regular",
-                    "product": "MIS",
-                    "order_type": "MARKET",
-                    "quantity": 75
-                }],"compact");
-                console.log(response);
 
-
-        
-
-        res.json({ message: response });
+                const response = await kc.getPositions();
+                const dayPnl = (response.day[0].pnl).toFixed(2);
+                console.log(dayPnl);
+                res.json(dayPnl);
             } catch (err) {
                 console.log(err);
                 res.status(500).json({ error: 'Error placing the order.' });
             }
         });
 
-        app.post('/api/buyOrderCe1', async (req, res) => {
+
+
+        app.post('/api/buyOrderCe', async (req, res) => {
             try {
                 const orderDataBuy = req.body; // Access the JSON data sent from the frontend
 
@@ -159,13 +150,14 @@ async function generateAccessToken() {
                 console.log('Received order data:', orderDataSell);
 
                 const orderDataObject = {
-                    "exchange": "NFO",
-                    "tradingsymbol": script,
+                    "exchange": "NSE",
+                    "tradingsymbol": "ZOMATO",
                     "transaction_type": "BUY",
-                    "quantity": qty,
+                    "quantity": 1,
                     "product": "MIS",
-                    "order_type": orderType,
-                    "validity": "DAY"
+                    "order_type": "LIMIT",
+                    "validity": "DAY",
+                    "price" : "90.00"
                 };
 
                 // Add "price" property only if orderType is "NRML"
@@ -174,7 +166,9 @@ async function generateAccessToken() {
                 }
                 console.log('Received order data:', orderDataObject);
 
-                await kc.placeOrder("regular", orderDataObject);
+                const response = await kc.placeOrder("regular", orderDataObject);
+                console.log(response);
+                
                 
 
             } catch (err) {
@@ -184,30 +178,23 @@ async function generateAccessToken() {
 
         io.on('connection', (socket) => {
 
-            console.log('CONNECTED');
+            
 
             // Emit data to clients at an interval
             const interval = setInterval(async () => {
                 try {
                     function subscribe() {
-                        var items = [256265];
+                        var items = [65883655];
                         ticker.subscribe(items);
                         ticker.setMode(ticker.modeQuote, items);
                     }
 
                     function websocket(ticks) {
+                        ltpTicks = ticks;
+                        ltp = ticks[0].last_price;
+                        socket.emit('dataNiftyUpdate', ticks);
+                        
 
-                        setInterval(async () => {
-                            try {
-                                console.log(ticks);
-                                // Emit the fetched data to clients
-                                socket.emit('dataNiftyCeUpdate', ticks);
-                                
-                            }
-                            catch (err) {
-                                console.log('Error fetching data:', err);
-                            }
-                        },1000);
                     }
                     ticker.connect();
                     ticker.on("ticks", websocket);
@@ -216,30 +203,25 @@ async function generateAccessToken() {
                 } catch (err) {
                     console.log('Error fetching data:', err);
                 }
-            }, 1000); // Emit data every 5 seconds
+            },1000); // Emit data every 5 seconds
+
+           
+            
 
             // Emit data2 to clients at an interval
             const interval2 = setInterval(async () => {
                 try {
                     function subscribe2() {
-                        var items = [256265];
+                        var items = [65883655];
                         ticker.subscribe(items);
                         ticker.setMode(ticker.modeQuote, items);
                     }
 
                     function websocket2(ticks) {
-
-                        setInterval(async () => {
-                            try {
-                                console.log(ticks);
-                                // Emit the fetched data to clients
-                                socket.emit('dataNiftyUpdate', ticks);
-                                
-                            }
-                            catch (err) {
-                                console.log('Error fetching data:', err);
-                            }
-                        },1000);
+                        ltpTicks = ticks;
+                        ltp = ticks[0].last_price;
+                        socket.emit('dataNiftyCeUpdate', ticks);
+                        
                     }
                     ticker.connect();
                     ticker.on("ticks", websocket2);
@@ -251,9 +233,11 @@ async function generateAccessToken() {
             }, 1000); // Emit data every 5 seconds
 
             socket.on('disconnect', () => {
-                clearInterval(interval); // Stop emitting data when the client disconnects
-                console.log('A client disconnected');
-            });
+                clearInterval(interval); // Clear the interval when the client disconnects
+                clearInterval(interval2); 
+              });
+
+            
         });
         server.listen(PORT, () => {
             console.log(`Server is running on http://localhost:${PORT}`);

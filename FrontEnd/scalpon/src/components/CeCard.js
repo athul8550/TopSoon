@@ -7,6 +7,7 @@ import ExpiryDatesCe from "./ExpiryDatesCe";
 import socketIOClient from "socket.io-client";
 
 export default function CeCard(){
+  const socket = socketIOClient("http://localhost:5000");
 
   const [CeSymbolSelected, setCeSymbolSelected] = useState("");
   const [CeStrikePriceSelected, setCeSTrikePriceSelected] = useState(null);
@@ -14,6 +15,10 @@ export default function CeCard(){
   const [SelectedQuantity, setSelectedQuantity] = useState("");
 
   const [NiftyCeData, setNiftyCeData] = useState(null);
+
+  const [startTrue, setStartTrue] = useState(null);
+  const [dayPnl, setDayPnl] = useState(null);
+  const [BrokeragePnl, setBrokeragePnl] = useState(null);
 
   
   /* GETTING THURSDAY DATES */
@@ -139,9 +144,10 @@ export default function CeCard(){
         body: JSON.stringify(OrderData), // Pass the variety value if needed
       });
 
-      if (response.ok) {
+      if (response) {
         const data = await response.json();
         console.log(data.message); // Output the server response
+        setStartTrue(true);
       } else {
         console.error('Error placing the order:', response.statusText);
       }
@@ -178,14 +184,51 @@ export default function CeCard(){
         body: JSON.stringify(OrderData), // Pass the variety value if needed
       });
 
-      if (response.ok) {
+      if (response) {
         const data = await response.json();
         console.log(data.message); // Output the server response
+        setStartTrue(false);
+        
       } else {
         console.error('Error placing the order:', response.statusText);
       }
       
     } catch (error) {
+      console.log(error);
+    }
+  }
+  async function fetchPnl(){
+    try{
+      if(startTrue){
+        const response = await fetch('http://localhost:5000/api/buyOrderCe1', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      const responseData = await response.json();
+      const pnlWithBrokerage = responseData - 40;
+      
+      console.log(responseData);
+      setDayPnl(responseData);
+      setBrokeragePnl(pnlWithBrokerage);
+
+      }
+      
+    }catch(error){
+      console.log(error);
+    }
+  }
+
+  useEffect(()=> {
+    fetchPnl();
+  },[NiftyCeData]);
+
+  async function handleCheckBtClick() {
+    try { 
+      
+      fetchPnl();
+    }catch (error) {
       console.log(error);
     }
   }
@@ -209,7 +252,7 @@ export default function CeCard(){
     return () => {
       socket.disconnect(); // Clean up the socket connection when the component unmounts
     };
-  });
+  }, []);
 
     return(
         <div>
@@ -246,6 +289,15 @@ export default function CeCard(){
       <button className="SellButtonCe" onClick={handleSellBtClick}>
         SELL
       </button> 
+      <button className="BuyButtonCe" onClick={handleCheckBtClick}>
+        Check
+      </button> 
+      <div>
+        <h1>TOTAL PNL</h1>
+        <h2>{dayPnl}</h2>
+        <h1>BROKERAGE PNL</h1>
+        <h2>{BrokeragePnl}</h2>
+        </div>
       <div>
       {/* Display the fetched data */}
       {NiftyCeData && (
